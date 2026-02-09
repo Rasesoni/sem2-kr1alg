@@ -1,22 +1,22 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
-int main(){
-    int num = 0;
-    int numbers = 0;
-    cout << num;
-    for(int i = 0;i<num;i++){
+
+int main() {
+    int n;
+    cin >> n;
+    int fullSum = 0;
+    for (int i = 0; i < n; i++) {
         int x;
         cin >> x;
-        numbers+=x;
+        fullSum += x;
     }
-    int retutn_num = 0;
-    for(int i = 0;i<num;i++){
+    int partialSum = 0;
+    for (int i = 0; i < n - 1; i++) {
         int x;
         cin >> x;
-        retutn_num+=x;
+        partialSum += x;
     }
-    cout << numbers - retutn_num;
+    cout << fullSum - partialSum;
+    
     return 0;
-
-
 }
