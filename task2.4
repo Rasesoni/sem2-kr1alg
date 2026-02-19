@@ -1,0 +1,192 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int value;
+    Node* prev;
+    Node* next;
+};
+
+Node* createNode(int value) {
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->prev = nullptr;
+    newNode->next = nullptr;
+    return newNode;
+}
+void pushBack(Node*& head, int value) {
+    Node* newNode = createNode(value);
+    if (!head) {
+        head = newNode;
+        return;
+    }
+    Node* current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = newNode;
+    newNode->prev = current;
+}
+void insertBefore(Node*& head, int target, int value) {
+    if (!head) {
+        cout << "List is empty " << target << endl;
+        return;
+    }
+    Node* current = head;
+    while (current) {
+        if (current->value == target) {
+            Node* newNode = createNode(value);
+            newNode->next = current;
+            newNode->prev = current->prev;
+            if (current->prev) {
+                current->prev->next = newNode;
+            }
+            else {
+                head = newNode;
+            }
+            current->prev = newNode;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Value " << target << " not found in list." << endl;
+}
+void removeAll(Node*& head, int value) {
+    if (!head) {
+        cout << "List is empty." << endl;
+        return;
+    }
+    Node* current = head;
+    bool found = false;
+    while (current) {
+        if (current->value == value) {
+            found = true;
+            Node* toDelete = current;
+            if (current->prev) {
+                current->prev->next = current->next;
+            }
+            else {
+                head = current->next;
+            }
+            if (current->next) {
+                current->next->prev = current->prev;
+            }
+            current = current->next;
+            delete toDelete;
+        }
+        else {
+            current = current->next;
+        }
+    }
+    if (!found) {
+        cout << "Value " << value << " not found in list." << endl;
+    }
+}
+
+int countNodes(Node* head) {
+    int count = 0;
+    Node* current = head;
+    while (current) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+void printForward(Node* head) {
+    if (!head) {
+        cout << "List is empty." << endl;
+        return;
+    }
+    Node* current = head;
+    while (current) {
+        cout << current->value;
+        if (current->next) cout << " <-> ";
+        current = current->next;
+    }
+    cout << endl;
+}
+void printBackward(Node* head) {
+    if (!head) {
+        cout << "List is empty." << endl;
+        return;
+    }
+    Node* current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    while (current) {
+        cout << current->value;
+        if (current->prev) cout << " <-> ";
+        current = current->prev;
+    }
+    cout << endl;
+}
+bool isPalindrome(Node* head) {
+    if (!head || !head->next) return true;
+
+    Node* left = head;
+    Node* right = head;
+    while (right->next) {
+        right = right->next;
+    }
+
+    while (left != right && left->prev != right) {
+        if (left->value != right->value) return false;
+        left = left->next;
+        right = right->prev;
+    }
+    if (left == right) return true;
+    if (left->value != right->value) return false;
+    return true;
+}
+
+void freeList(Node*& head) {
+    while (head) {
+        Node* toDelete = head;
+        head = head->next;
+        delete toDelete;
+    }
+}
+int main() {
+    Node* head = nullptr;
+    cout << " Empty list" << endl;
+    printForward(head);
+    printBackward(head);
+    cout << "Count: " << countNodes(head) << endl;
+    cout << "Is palindrome: " << (isPalindrome(head) ? "Yes" : "No") << endl;
+    insertBefore(head, 5, 10);
+    removeAll(head, 1);
+    cout << endl;
+    cout << " Single element" << endl;
+    pushBack(head, 42);
+    printForward(head);
+    cout << "Count: " << countNodes(head) << endl;
+    cout << "Is palindrome: " << (isPalindrome(head) ? "Yes" : "No") << endl;
+    freeList(head);
+    cout << endl;
+    cout << "Main operations" << endl;
+    pushBack(head, 1);
+    pushBack(head, 2);
+    pushBack(head, 3);
+    pushBack(head, 2);
+    pushBack(head, 4);
+    cout << "After pushBack (1,2,3,2,4): ";
+    printForward(head);
+    cout << "Backward: ";
+    printBackward(head);
+    cout << "Count: " << countNodes(head) << endl;
+    cout << endl;
+    insertBefore(head, 2, 99);
+    cout << "After insertBefore(2, 99): ";
+    printForward(head);
+    insertBefore(head, 1, 0);
+    cout << "After insertBefore(1, 0): ";
+    printForward(head);
+    removeAll(head, 2);
+    cout << "After removeAll(2): ";
+    printForward(head);
+    cout << "Count: " << countNodes(head) << endl;
+    cout << endl;
+
+    freeList(head);
+}
